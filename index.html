@@ -30,26 +30,51 @@
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
       }
+      #root:empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f8fafc;
+      }
     </style>
     <script>
-      // Global process shim to prevent ReferenceError during deployment
-      window.process = window.process || { env: { API_KEY: "" } };
+      // Robust process shim for browser environments
+      window.process = { 
+        env: { API_KEY: "" },
+        version: "",
+        nextTick: function(fn) { setTimeout(fn, 0); }
+      };
+      
+      // Early error tracking to console
+      window.onerror = function(msg, url, line, col, error) {
+        console.error("Runtime Error:", msg, "\nat", url, ":", line, ":", col, "\nError object:", error);
+      };
     </script>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
-    "xlsx": "https://esm.sh/xlsx@^0.18.5",
-    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "recharts": "https://esm.sh/recharts@^3.6.0"
+    "xlsx": "https://esm.sh/xlsx@0.18.5",
+    "@google/genai": "https://esm.sh/@google/genai@1.37.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.2.3/client",
+    "react/jsx-runtime": "https://esm.sh/react@19.2.3/jsx-runtime",
+    "react": "https://esm.sh/react@19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@0.462.0",
+    "recharts": "https://esm.sh/recharts@3.6.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
   }
 }
 </script>
-</head>
+    <!-- Entry Point for the application -->
+    <script type="module" src="./index.tsx"></script>
+  </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
-    <div id="root"></div>
+    <div id="root">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <p class="text-slate-500 font-medium">애플리케이션 초기화 중...</p>
+      </div>
+    </div>
   </body>
 </html>
