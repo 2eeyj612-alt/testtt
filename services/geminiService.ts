@@ -1,18 +1,21 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { CategoryMapping } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const categorizeProductsWithAI = async (productNames: string[]): Promise<CategoryMapping[]> => {
-  if (!process.env.API_KEY) {
+  const apiKey = process.env.API_KEY;
+  
+  if (!apiKey) {
     console.warn("API Key missing, skipping AI categorization");
     return productNames.map(name => ({ productName: name, major: '미분류', minor: '기타' }));
   }
 
+  // Initialize inside the function to prevent top-level script errors
+  const ai = new GoogleGenAI({ apiKey });
+
   // Deduplicate names to save tokens
   const uniqueNames = Array.from(new Set(productNames));
   
-  // Chunking to avoid massive prompts if list is huge (simple implementation for now, limit to 200 items for demo reliability)
+  // Chunking to avoid massive prompts (limit to 300 items for stability)
   const chunk = uniqueNames.slice(0, 300); 
 
   try {
@@ -49,7 +52,7 @@ export const categorizeProductsWithAI = async (productNames: string[]): Promise<
 
   } catch (error) {
     console.error("AI Categorization failed:", error);
-    // Fallback
+    // Fallback to unclassified
     return uniqueNames.map(name => ({ productName: name, major: '미분류', minor: '기타' }));
   }
 };
