@@ -1,0 +1,5 @@
+{
+  "name": "Sales Insight AI",
+  "description": "An intelligent sales performance analysis tool that processes monthly Excel reports. It automatically categorizes products using Gemini AI and provides comparative insights between periods, featuring revenue analysis, category breakdown, and growth metrics.",
+  "requestFramePermissions": []
+}
